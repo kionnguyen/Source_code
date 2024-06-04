@@ -70,20 +70,18 @@ void Red_Led_Blink()
 
 void PORTC_PORTD_IRQHandler(void)
 {
-	int SW1_Status, SW2_Status; //Indicates the status of SW1 and SW2 (if they are pressed or not)
+	int sw1_state, sw2_state; //Indicates the status of SW1 and SW2 (if they are pressed or not)
 	
 	//Read Switch status
-	SW1_Status = (PORTC->PCR[SW1] & (1 << 24)) >> 24;
+	sw1_state = (PORTC->PCR[SW1] & (1 << 24)) >> 24;
 	SW2_Status = (PORTC->PCR[SW2] & (1 << 24)) >> 24;
 	
 	//Update state variable of 2 switch and clear interrupt flag
-	if (SW1_Status == 1)
-	{
+	if (sw1_state == 1) {
 		SW1push = 1; 
 		PORTC->PCR[SW1] |= (1 << 24); 
 	}
-	if (SW2_Status == 1)
-	{
+	if (sw2_state == 1) {
 		SW3push = 1; 
 		PORTC->PCR[SW2] |= (1 << 24); 
 	}
@@ -95,21 +93,12 @@ void PORTC_PORTD_IRQHandler(void)
 #include "pin_mux.h"
 int main(void)
 {
-    __disable_irq();
     SLCD_Init();
-		BOARD_InitPins();
-    BOARD_BootClockRUN();
-    BOARD_InitDebugConsole();
-		init_Led();
-		init_SW();
-		init_SysTick();
-		init_I2C0();
-	
-		
-		NVIC_EnableIRQ(PORTC_PORTD_IRQn);
-
-		/* Enable global interrupt */
-		__enable_irq();
+	init_Led();
+	init_SW();
+	init_SysTick();
+	init_I2C0();
+	NVIC_EnableIRQ(PORTC_PORTD_IRQn);
 
     while(1){
         if(SW1push == true){
@@ -127,46 +116,43 @@ int main(void)
 								state = RUN;
 						}
         }
-				else if(SW3push == true){
+		else if(SW3push == true) {
           // Clear the flag
             SW3push = false;
             state = STOP;
         }
 				
-        /* Carry out the given tasks defined in the current state */
         if(state == STOP){
-						PTE->PCOR |= (1 << RED);
-						PTD->PCOR |= (1 << GREEN);
-						for(int i = 0;i < 3;i++)
-						{
-							MAG_DATA_MAX_AXIS[i]=0;
-							MAG_DATA_MIN_AXIS[i]=0;
-							MAG_DATA_READ_AXIS[i]=0;
-						}
-						//Display STOP Message
-						SLCD_WriteMsg((unsigned char *)"STOP");
+			PTE->PCOR |= (1 << RED);
+			PTD->PCOR |= (1 << GREEN);
+			for(int i = 0; i < 3; i++)
+			{
+				MAG_DATA_MAX_AXIS[i]=0;
+				MAG_DATA_MIN_AXIS[i]=0;
+				MAG_DATA_READ_AXIS[i]=0;
+			}
+			SLCD_WriteMsg((unsigned char *)"STOP");
         }
-				else if(state == RUN) {
-						PTE->PSOR |= (1 << RED);
-						MAG3110_Run();
-						Green_Led_Blink();
-						snprintf(MAGprint,5,"%4d",ANGLE);
-						SLCD_WriteMsg(MAGprint);
-			  }
-			  else if(state == ACQ) {
-						MAG3110_Init();
-						MAG3110_Acq();
-						SLCD_WriteMsg((unsigned char *)"ACQ");
+		else if(state == RUN) {
+			PTE->PSOR |= (1 << RED);
+			MAG3110_Run();
+			Green_Led_Blink();
+			snprintf(MAGprint,5,"%4d",ANGLE);
+			SLCD_WriteMsg(MAGprint);
+		}
+		else if(state == ACQ) {
+			MAG3110_Init();
+			MAG3110_Acq();
+			SLCD_WriteMsg((unsigned char *)"ACQ");
+}
+		else if(state == CAL) {
+			MAG3110_Cal();
+			SLCD_WriteMsg((unsigned char *)"CAL1");
         }
-			  else if(state == CAL)
-			  {
-						MAG3110_Cal();
-						SLCD_WriteMsg((unsigned char *)"CAL1");
-        }
-			  else {
-						PTD->PSOR |= (1 << GREEN);
-						Red_Led_Blink();
-						SLCD_WriteMsg((unsigned char *)"REST");
-			  }
+		else {
+			PTD->PSOR |= (1 << GREEN);
+			Red_Led_Blink();
+			SLCD_WriteMsg((unsigned char *)"REST");
+		}
     }
 }
