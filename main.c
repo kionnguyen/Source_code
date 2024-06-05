@@ -24,7 +24,7 @@ short int ANGLE;
 
 typedef enum {
 	STOP,
-	RUN,
+	ACTIVE,
 	ACQ,
 	CAL,
 	PAUSE
@@ -109,50 +109,50 @@ int main(void)
             }else if(state == ACQ){
                 state = CAL;
             }else if(state == CAL){
-                state = RUN;
-            }else if(state == RUN) {
+                state = ACTIVE;
+            }else if(state == ACTIVE) {
 	        state = PAUSE;
 	    }else {
-	        state = RUN;
+	        state = ACTIVE;
 	    }
         }
-		else if(SW3push == true) {
+	else if(SW3push == true) {
           // Clear the flag
             SW3push = false;
             state = STOP;
         }
 				
-        if(state == STOP){
-			PTE->PCOR |= (1 << RED);
-			PTD->PCOR |= (1 << GREEN);
-			for(int i = 0; i < 3; i++)
-			{
-				MAG_DATA_MAX_AXIS[i]=0;
-				MAG_DATA_MIN_AXIS[i]=0;
-				MAG_DATA_READ_AXIS[i]=0;
-			}
-			SLCD_WriteMsg((unsigned char *)"STOP");
-        }
-		else if(state == RUN) {
-			PTE->PSOR |= (1 << RED);
-			MAG3110_Run();
-			Green_Led_Blink();
-			snprintf(MAGprint,5,"%4d",ANGLE);
-			SLCD_WriteMsg(MAGprint);
+    if(state == STOP){
+		PTE->PCOR |= (1 << RED);
+		PTD->PCOR |= (1 << GREEN);
+		for(int i = 0; i < 3; i++)
+		{
+			MAG_DATA_MAX_AXIS[i]=0;
+			MAG_DATA_MIN_AXIS[i]=0;
+			MAG_DATA_READ_AXIS[i]=0;
 		}
-		else if(state == ACQ) {
-			MAG3110_Init();
-			MAG3110_Acq();
-			SLCD_WriteMsg((unsigned char *)"ACQ");
-}
-		else if(state == CAL) {
-			MAG3110_Cal();
-			SLCD_WriteMsg((unsigned char *)"CAL1");
+		SLCD_WriteMsg((unsigned char *)"STOP");
+    }
+	else if(state == ACTIVE) {
+		PTE->PSOR |= (1 << RED);
+		MAG3110_Run();
+		Green_Led_Blink();
+		snprintf(MAGprint,5,"%4d",ANGLE);
+		SLCD_WriteMsg(MAGprint);
+	}
+	else if(state == ACQ) {
+		MAG3110_Init();
+		MAG3110_Acq();
+		SLCD_WriteMsg((unsigned char *)"ACQ");
+	}
+	else if(state == CAL) {
+		MAG3110_Cal();
+		SLCD_WriteMsg((unsigned char *)"CAL1");
         }
-		else {
-			PTD->PSOR |= (1 << GREEN);
-			Red_Led_Blink();
-			SLCD_WriteMsg((unsigned char *)"REST");
-		}
+	else {
+		PTD->PSOR |= (1 << GREEN);
+		Red_Led_Blink();
+		SLCD_WriteMsg((unsigned char *)"REST");
+	}
     }
 }
