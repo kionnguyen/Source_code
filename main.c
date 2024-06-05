@@ -74,7 +74,7 @@ void PORTC_PORTD_IRQHandler(void)
 	
 	//Read Switch status
 	sw1_state = (PORTC->PCR[SW1] & (1 << 24)) >> 24;
-	SW2_Status = (PORTC->PCR[SW2] & (1 << 24)) >> 24;
+	sw2_state = (PORTC->PCR[SW2] & (1 << 24)) >> 24;
 	
 	//Update state variable of 2 switch and clear interrupt flag
 	if (sw1_state == 1) {
