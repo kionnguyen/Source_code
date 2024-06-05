@@ -17,7 +17,14 @@ void init_I2C0(void)
 		//Enable pullup resistor SDA
 		PORTE->PCR[I2C0_SDA]|= PORT_PCR_PS_MASK |PORT_PCR_PE_MASK;
 	
-		//Config clock freq 100kHz
+		//Config I2C baud rate, SDA hold time, SCL stop hold time and SCL start hold time
+		//Mul(02) = 4, ICR(0x00) => SCL divider = 20 
+		/*
+			I2C baud rate = bus speed (Hz)/(mul × SCL divider)
+			SDA hold time = bus period (s) × mul × SDA hold value
+			SCL start hold time = bus period (s) × mul × SCL start hold value
+			SCL stop hold time = bus period (s) × mul × SCL stop hold value
+		*/
 		I2C0->F |= I2C_F_MULT(02) | I2C_F_ICR(0x00);
 		//Enable I2C0
 		I2C0->C1 |= I2C_C1_IICEN_MASK;
