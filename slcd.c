@@ -172,12 +172,12 @@ void SLCD_Init(void)
 
 void SLCD_EnablePins(void)
 {
-    unsigned char 		i;
+    	unsigned char i;
    	unsigned long int *p_pen;
    	unsigned char 		pen_offset;   // 0 or 1   
    	unsigned char 		pen_bit;      // 0 to 31
 
-   	LCD->PEN[0]	 = 0x0;
+   	LCD->PEN[0]  = 0x0;
    	LCD->PEN[1]  = 0x0;
    	LCD->BPEN[0] = 0x0;
    	LCD->BPEN[1] = 0x0;
