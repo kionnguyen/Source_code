@@ -111,10 +111,10 @@ int main(void)
             }else if(state == CAL){
                 state = RUN;
             }else if(state == RUN) {
-								state = PAUSE;
-						}else {
-								state = RUN;
-						}
+	        state = PAUSE;
+	    }else {
+	        state = RUN;
+	    }
         }
 		else if(SW3push == true) {
           // Clear the flag
