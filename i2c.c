@@ -42,7 +42,7 @@ unsigned char I2C_SingleByteRead(unsigned char DEV_ADR, unsigned char REG_ADR)
 		
 		//Send MAG device address with write bit
 		I2C0->D = WRITE(DEV_ADR);
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -51,7 +51,7 @@ unsigned char I2C_SingleByteRead(unsigned char DEV_ADR, unsigned char REG_ADR)
 			
 		//Send MAG register address
 		I2C0->D = REG_ADR;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -63,7 +63,7 @@ unsigned char I2C_SingleByteRead(unsigned char DEV_ADR, unsigned char REG_ADR)
 			
 		//Send MAG device address and a Read Bit
 		I2C0->D = READ(DEV_ADR);
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -77,14 +77,14 @@ unsigned char I2C_SingleByteRead(unsigned char DEV_ADR, unsigned char REG_ADR)
 				
 		//Read dummy data
 		dummy_read = I2C0->D;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
 		
 		//Read real data
 		data = I2C0->D;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -160,7 +160,7 @@ void I2C_SingleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, unsigned 
 		
 		//Send MAG device address with write bit
 		I2C0->D = WRITE(DEV_ADR);
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -169,7 +169,7 @@ void I2C_SingleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, unsigned 
 			
 		//Send MAG register address
 		I2C0->D = REG_ADR;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -178,7 +178,7 @@ void I2C_SingleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, unsigned 
 			
 		//Send data
 		I2C0->D = DATA;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -200,7 +200,7 @@ void I2C_MultipleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, int num
 		
 		//Send MAG device address with write bit
 		I2C0->D = WRITE(DEV_ADR);
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -209,7 +209,7 @@ void I2C_MultipleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, int num
 			
 		//Send MAG register address
 		I2C0->D = REG_ADR;
-		//Wait for transmission: IICIF bit = 0 means there is an interrupt
+		//Wait for transmission: IICIF bit = 1 means there is an interrupt
 		while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 		//Clear IICIF flag
 		I2C0->S |= I2C_S_IICIF_MASK;
@@ -220,7 +220,7 @@ void I2C_MultipleByteWrite(unsigned char DEV_ADR, unsigned char REG_ADR, int num
 		for(int i = 0;i < num_bytes; i++)
 		{
 			I2C0->D = data_bytes[i];
-			//Wait for transmission: IICIF bit = 0 means there is an interrupt
+			//Wait for transmission: IICIF bit = 1 means there is an interrupt
 			while((I2C0->S & I2C_S_IICIF_MASK) == 0){}
 			//Clear IICIF flag
 			I2C0->S |= I2C_S_IICIF_MASK;
